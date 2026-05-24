@@ -307,7 +307,7 @@ function initiatePayment() {
     if (secs <= 0) { clearInterval(countdownTimer); confirmPayment(); }
   }, 1000);
 
-  fetch('http://localhost:3000/api/mpesa/pay', {
+  fetch('https://queen-of-wigs-production.up.railway.app/api/mpesa/pay', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone, amount: total })
