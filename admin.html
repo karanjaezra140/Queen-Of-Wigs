@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Queen of Wigs</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    body { background: #f5f0f3; }
+    /* ── LAYOUT ── */
+    .admin-sidebar {
+      position: fixed; top:0; left:0; width:240px; height:100vh;
+      background: var(--ink); z-index:100; overflow-y:auto; padding:0;
+    }
+    .sidebar-logo {
+      padding:28px 24px 24px; border-bottom:1px solid rgba(255,255,255,.07);
+      display:flex; align-items:center; gap:12px;
+    }
+    .sidebar-logo img { width:44px; height:44px; border-radius:10px; object-fit:cover; border:2px solid var(--gold); }
+    .sidebar-logo-text strong { display:block; color:white; font-family:var(--font-head); font-size:1rem; }
+    .sidebar-logo-text span { font-size:10px; color:rgba(255,255,255,.35); letter-spacing:1px; }
+    .sidebar-section { padding:20px 0 8px 24px; font-size:9.5px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.22); }
+    .sidebar-nav a {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 24px; color:rgba(255,255,255,.5); font-size:13.5px;
+      transition:all .2s; cursor:pointer; text-decoration:none;
+      border-left:3px solid transparent;
+    }
+    .sidebar-nav a:hover, .sidebar-nav a.active {
+      color:white; background:rgba(181,64,94,.15); border-left-color:var(--rose);
+    }
+    .sidebar-nav a .icon { font-size:16px; width:20px; text-align:center; }
+    .admin-main { margin-left:240px; padding:32px; min-height:100vh; }
+    /* ── TOP BAR ── */
+    .admin-topbar { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:32px; }
+    .admin-topbar h1 { font-family:var(--font-head); font-size:1.9rem; }
+    .admin-topbar h1 em { color:var(--rose); font-style:italic; font-weight:400; }
+    .admin-topbar p { color:var(--muted); font-size:13px; margin-top:4px; }
+    .topbar-right { display:flex; gap:10px; align-items:center; flex-shrink:0; }
+    .topbar-badge { background:var(--grad); color:white; padding:7px 16px; border-radius:20px; font-size:12px; font-weight:600; white-space:nowrap; }
+    /* ── KPI CARDS ── */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:28px; }
+    .kpi-card {
+      background:white; border-radius:var(--radius); padding:24px;
+      box-shadow:0 2px 14px rgba(0,0,0,.06); border:1px solid rgba(0,0,0,.04);
+    }
+    .kpi-label { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:10px; }
+    .kpi-value { font-family:var(--font-head); font-size:2rem; font-weight:700; color:var(--ink); line-height:1; }
+    .kpi-sub { font-size:11.5px; margin-top:8px; color:var(--muted); }
+    .kpi-sub.up { color:#2e7d32; }
+    /* ── CHARTS ── */
+    .charts-row { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px; }
+    .chart-card { background:white; border-radius:var(--radius); padding:28px; box-shadow:0 2px 14px rgba(0,0,0,.06); }
+    .chart-card h3 { font-family:var(--font-head); font-size:1rem; margin-bottom:4px; }
+    .chart-card p { font-size:12px; color:var(--muted); margin-bottom:20px; }
+    .chart-wrap { position:relative; height:220px; }
+    /* ── ORDERS TABLE ── */
+    .data-card { background:white; border-radius:var(--radius); box-shadow:0 2px 14px rgba(0,0,0,.06); overflow:hidden; margin-bottom:24px; }
+    .data-card-header { display:flex; align-items:center; justify-content:space-between; padding:22px 28px; border-bottom:1px solid var(--border); }
+    .data-card-header h3 { font-family:var(--font-head); font-size:1.1rem; margin:0; }
+    .filter-btns { display:flex; gap:8px; }
+    .filter-btn { padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:none; font-size:12px; cursor:pointer; transition:all .2s; font-family:var(--font-body); }
+    .filter-btn.active { background:var(--rose); color:white; border-color:var(--rose); }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; padding:11px 16px; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); background:#fdfafc; border-bottom:1px solid var(--border); }
+    td { padding:13px 16px; font-size:13px; border-bottom:1px solid #f7f3f6; color:var(--ink); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:var(--rose-light); }
+    .status-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:20px; font-size:11px; font-weight:700; }
+    .status-paid    { background:#e8f5e9; color:#2e7d32; }
+    .status-shipped { background:#e3f2fd; color:#1565c0; }
+    .status-pending { background:#fff8e1; color:#e65100; }
+    .action-btn { padding:5px 12px; border-radius:8px; border:1px solid var(--border); background:white; font-size:11px; cursor:pointer; transition:all .15s; font-family:var(--font-body); margin-right:4px; }
+    .action-btn:hover { background:var(--rose); color:white; border-color:var(--rose); }
+    .empty-state { text-align:center; padding:60px 24px; }
+    .empty-icon { font-size:3rem; margin-bottom:14px; }
+    .empty-state h3 { font-family:var(--font-head); margin-bottom:8px; }
+    .empty-state p { color:var(--muted); font-size:14px; }
+    .data-footer { display:flex; gap:10px; padding:16px 24px; background:var(--bg); border-top:1px solid var(--border); align-items:center; }
+    .data-footer span { font-size:12px; color:var(--muted); }
+    .export-btn { padding:7px 16px; border-radius:9px; border:1.5px solid var(--rose); background:white; color:var(--rose); font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; font-family:var(--font-body); }
+    .export-btn:hover { background:var(--rose); color:white; }
+    /* ── PRODUCTS FORM ── */
+    .add-form { background:white; border-radius:var(--radius); padding:28px; box-shadow:0 2px 14px rgba(0,0,0,.06); margin-bottom:24px; }
+    .add-form h3 { font-family:var(--font-head); font-size:1.1rem; margin-bottom:20px; }
+    .form-row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; align-items:end; }
+    .add-form label { display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:7px; }
+    .add-form input { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:var(--font-body); font-size:14px; outline:none; }
+    .add-form input:focus { border-color:var(--rose); }
+    .add-product-btn { background:var(--grad); color:white; border:none; border-radius:var(--radius-sm); padding:12px 22px; font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; margin-top:16px; }
+    /* ── LOGIN GATE ── */
+    .login-gate {
+      position:fixed; inset:0;
+      background:linear-gradient(135deg, #180e13 0%, #2d1525 100%);
+      z-index:9999; display:flex; align-items:center; justify-content:center;
+    }
+    .login-box { background:white; border-radius:24px; padding:52px 44px; max-width:400px; width:90%; text-align:center; box-shadow:0 40px 100px rgba(0,0,0,.4); }
+    .login-box img { width:68px; border-radius:16px; margin:0 auto 20px; border:2px solid var(--gold); }
+    .login-box h2 { font-family:var(--font-head); font-size:1.7rem; margin-bottom:8px; }
+    .login-box p { color:var(--muted); font-size:14px; margin-bottom:28px; }
+    .login-input { width:100%; padding:14px 18px; border:1.5px solid var(--border); border-radius:12px; font-size:15px; margin-bottom:12px; outline:none; font-family:var(--font-body); }
+    .login-input:focus { border-color:var(--rose); }
+    .login-btn { width:100%; padding:15px; background:var(--grad); color:white; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; font-family:var(--font-body); }
+    .login-error { color:var(--rose); font-size:13px; margin-top:10px; display:none; }
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px) { .kpi-grid { grid-template-columns:repeat(2,1fr); } .charts-row { grid-template-columns:1fr; } }
+    @media(max-width:768px) { .admin-sidebar { display:none; } .admin-main { margin-left:0; padding:20px; } .kpi-grid { grid-template-columns:repeat(2,1fr); } .form-row3 { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="login-gate" id="login-gate">
+  <div class="login-box">
+    <img src="images/Queenlogo.jpeg" alt="Queen of Wigs" onerror="this.style.display='none'">
+    <h2>Admin <em style="color:var(--rose)">Access</em></h2>
+    <p>Enter your password to access the dashboard</p>
+    <input type="password" class="login-input" id="login-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkLogin()">
+    <button class="login-btn" onclick="checkLogin()">Login →</button>
+    <div class="login-error" id="login-error">❌ Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="admin-sidebar">
+  <div class="sidebar-logo">
+    <img src="images/Queenlogo.jpeg" alt="Logo" onerror="this.style.display='none'">
+    <div class="sidebar-logo-text">
+      <strong>Queen of Wigs</strong>
+      <span>ADMIN PANEL</span>
+    </div>
+  </div>
+  <div class="sidebar-section">Analytics</div>
+  <div class="sidebar-nav">
+    <a class="active" id="nav-dashboard" onclick="showPanel('dashboard')"><span class="icon">📊</span> Dashboard</a>
+    <a id="nav-orders" onclick="showPanel('orders')"><span class="icon">📦</span> All Orders</a>
+  </div>
+  <div class="sidebar-section">Manage</div>
+  <div class="sidebar-nav">
+    <a id="nav-products" onclick="showPanel('products')"><span class="icon">👑</span> Products</a>
+  </div>
+  <div class="sidebar-section">Store</div>
+  <div class="sidebar-nav">
+    <a href="index.html" target="_blank"><span class="icon">🌐</span> View Store</a>
+    <a onclick="doLogout()"><span class="icon">🔒</span> Logout</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="admin-main">
+
+  <!-- DASHBOARD PANEL -->
+  <div id="panel-dashboard">
+    <div class="admin-topbar">
+      <div>
+        <h1>Hello, <em>Queen 👑</em></h1>
+        <p>Here's what's happening with your store</p>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-badge" id="live-time">Loading…</span>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Revenue</div>
+        <div class="kpi-value" id="kpi-revenue">KSh 0</div>
+        <div class="kpi-sub up" id="kpi-rev-sub">↑ All paid orders</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Orders</div>
+        <div class="kpi-value" id="kpi-orders">0</div>
+        <div class="kpi-sub">All time</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg. Order Value</div>
+        <div class="kpi-value" id="kpi-avg">KSh 0</div>
+        <div class="kpi-sub">Per transaction</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Wigs Sold</div>
+        <div class="kpi-value" id="kpi-items">0</div>
+        <div class="kpi-sub up">Items total</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Revenue Over Time</h3>
+        <p>Daily revenue from M-Pesa orders</p>
+        <div class="chart-wrap"><canvas id="revenue-chart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Best-Selling Wigs</h3>
+        <p>By number of units sold</p>
+        <div class="chart-wrap" id="donut-wrap"><canvas id="products-chart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-header">
+        <h3>Recent Orders</h3>
+        <span id="orders-count-label" style="font-size:13px;color:var(--muted);">0 orders</span>
+      </div>
+      <div id="recent-orders-table"></div>
+      <div class="data-footer">
+        <span>Export your data:</span>
+        <button class="export-btn" onclick="exportCSV()">📥 Download CSV</button>
+        <button class="export-btn" onclick="exportJSON()">📋 Copy JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS PANEL -->
+  <div id="panel-orders" style="display:none;">
+    <div class="admin-topbar">
+      <div><h1>All <em>Orders</em></h1><p>Every order placed through your store</p></div>
+    </div>
+    <div class="data-card">
+      <div class="data-card-header">
+        <h3>Order Management</h3>
+        <div class="filter-btns">
+          <button class="filter-btn active" onclick="filterOrders('all',this)">All</button>
+          <button class="filter-btn" onclick="filterOrders('paid',this)">Paid</button>
+          <button class="filter-btn" onclick="filterOrders('shipped',this)">Shipped</button>
+        </div>
+      </div>
+      <div id="all-orders-table"></div>
+      <div class="data-footer">
+        <span>Export:</span>
+        <button class="export-btn" onclick="exportCSV()">📥 Download CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS PANEL -->
+  <div id="panel-products" style="display:none;">
+    <div class="admin-topbar">
+      <div><h1>Manage <em>Products</em></h1><p>Add new wigs to your store</p></div>
+    </div>
+    <div class="add-form">
+      <h3>➕ Add New Wig to Store</h3>
+      <div class="form-row3">
+        <div>
+          <label>Product Name</label>
+          <input type="text" id="new-name" placeholder="e.g. Chloe Curl Wig">
+        </div>
+        <div>
+          <label>Price (KSh)</label>
+          <input type="number" id="new-price" placeholder="3500">
+        </div>
+        <div>
+          <label>Image filename</label>
+          <input type="text" id="new-image" placeholder="images/mwig.jpeg">
+        </div>
+      </div>
+      <button class="add-product-btn" onclick="addProduct()">+ Add Product to Store</button>
+    </div>
+    <div class="data-card">
+      <div class="data-card-header"><h3>Current Products</h3></div>
+      <div id="products-table"></div>
+    </div>
+  </div>
+
+</main>
+
+<script src="js/app.js"></script>
+<script>
+/* ════════════════════════════════════════
+   ADMIN DASHBOARD SCRIPT
+════════════════════════════════════════ */
+
+// ── Change this password! ──
+const ADMIN_PASSWORD = 'queen2024';
+
+function checkLogin() {
+  if (document.getElementById('login-pass').value === ADMIN_PASSWORD) {
+    document.getElementById('login-gate').style.display = 'none';
+    initDashboard();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('login-pass').value = '';
+  }
+}
+function doLogout() { document.getElementById('login-gate').style.display = 'flex'; }
+
+function showPanel(name) {
+  ['dashboard','orders','products'].forEach(p => {
+    document.getElementById('panel-'+p).style.display = p===name?'block':'none';
+    const nav = document.getElementById('nav-'+p);
+    if (nav) nav.classList.toggle('active', p===name);
+  });
+  if (name==='dashboard') initDashboard();
+  if (name==='orders')    renderAllOrders('all');
+  if (name==='products')  renderProducts();
+}
+
+function getOrders() { return JSON.parse(localStorage.getItem('qow_orders') || '[]'); }
+
+function calcStats(orders) {
+  const revenue = orders.reduce((t,o) => t+(o.total||0), 0);
+  const items   = orders.reduce((t,o) => t+((o.items||[]).length), 0);
+  return { revenue, items, avg: orders.length ? Math.round(revenue/orders.length) : 0, count: orders.length };
+}
+
+let clockInterval;
+function initDashboard() {
+  const orders = getOrders();
+  const stats  = calcStats(orders);
+
+  document.getElementById('kpi-revenue').textContent = 'KSh ' + stats.revenue.toLocaleString();
+  document.getElementById('kpi-orders').textContent  = stats.count;
+  document.getElementById('kpi-avg').textContent     = 'KSh ' + stats.avg.toLocaleString();
+  document.getElementById('kpi-items').textContent   = stats.items;
+  document.getElementById('orders-count-label').textContent = stats.count + ' total orders';
+
+  buildRevenueChart(orders);
+  buildProductsChart(orders);
+  renderTable(orders.slice(-20).reverse(), 'recent-orders-table');
+
+  clearInterval(clockInterval);
+  updateClock();
+  clockInterval = setInterval(updateClock, 1000);
+}
+
+function updateClock() {
+  const now = new Date();
+  const el  = document.getElementById('live-time');
+  if (el) el.textContent = now.toLocaleDateString('en-KE',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + now.toLocaleTimeString('en-KE',{hour:'2-digit',minute:'2-digit'});
+}
+
+/* ── CHARTS ── */
+let revenueChart, productsChart;
+
+function buildRevenueChart(orders) {
+  const byDate = {};
+  orders.forEach(o => {
+    const d = o.date ? o.date.slice(0,10) : 'Unknown';
+    byDate[d] = (byDate[d]||0) + (o.total||0);
+  });
+  const labels = Object.keys(byDate).sort().slice(-14);
+  const data   = labels.map(d => byDate[d]);
+
+  const ctx = document.getElementById('revenue-chart').getContext('2d');
+  if (revenueChart) revenueChart.destroy();
+  revenueChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels.map(d => new Date(d).toLocaleDateString('en-KE',{month:'short',day:'numeric'})),
+      datasets: [{
+        label: 'Revenue (KSh)',
+        data, borderColor: '#b5405e',
+        backgroundColor: 'rgba(181,64,94,.07)',
+        borderWidth: 2.5, pointBackgroundColor: '#b5405e',
+        pointRadius: 4, fill: true, tension: .4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { ticks: { font: { size: 11 }, callback: v => 'KSh ' + v.toLocaleString() } }
+      }
+    }
+  });
+}
+
+function buildProductsChart(orders) {
+  const counts = {};
+  orders.forEach(o => (o.items||[]).forEach(i => { counts[i.name]=(counts[i.name]||0)+1; }));
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const labels = sorted.map(x => x[0]);
+  const data   = sorted.map(x => x[1]);
+  const colors = ['#b5405e','#c4994a','#8c2842','#9a7030','#d47090','#d4aa60','#e07090'];
+
+  const wrap = document.getElementById('donut-wrap');
+  const ctx  = document.getElementById('products-chart').getContext('2d');
+  if (productsChart) productsChart.destroy();
+
+  if (!data.length) {
+    wrap.innerHTML = '<div style="text-align:center;padding:60px 0;color:#bbb;font-size:14px;">No sales data yet.<br>Orders will appear here as customers buy.</div>';
+    return;
+  }
+  productsChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 12 } } }
+    }
+  });
+}
+
+/* ── ORDERS TABLE ── */
+function renderTable(orders, containerId) {
+  const el = document.getElementById(containerId);
+  if (!orders.length) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📦</div>
+      <h3>No orders yet</h3>
+      <p>When customers complete M-Pesa payment, their orders will appear here.</p>
+    </div>`;
+    return;
+  }
+  el.innerHTML = `<div style="overflow-x:auto;"><table>
+    <thead><tr>
+      <th>Ref</th><th>Customer</th><th>Phone</th><th>Items</th>
+      <th>Total</th><th>Date</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${orders.map(o => `
+      <tr>
+        <td><strong style="font-family:var(--font-head)">${o.ref||'—'}</strong></td>
+        <td>${o.name||'—'}</td>
+        <td style="font-size:12px;">${o.phone?'+'+o.phone:'—'}</td>
+        <td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(o.items||[]).map(i=>i.name).join(', ')||'—'}</td>
+        <td><strong>KSh ${(o.total||0).toLocaleString()}</strong></td>
+        <td style="font-size:12px;">${o.date?new Date(o.date).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
+        <td><span class="status-badge status-${o.status||'paid'}">${o.status==='shipped'?'🚚 Shipped':'💚 Paid'}</span></td>
+        <td>
+          ${o.status!=='shipped'?`<button class="action-btn" onclick="markShipped('${o.ref}')">📦 Ship</button>`:''}
+          ${o.phone?`<button class="action-btn" onclick="waContact('${o.phone}','${o.ref}')">💬 WA</button>`:''}
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function renderAllOrders(filter) {
+  const orders   = getOrders();
+  const filtered = filter==='all' ? orders : orders.filter(o=>o.status===filter);
+  renderTable([...filtered].reverse(), 'all-orders-table');
+}
+
+function filterOrders(f, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAllOrders(f);
+}
+
+function markShipped(ref) {
+  const orders = getOrders();
+  const idx    = orders.findIndex(o=>o.ref===ref);
+  if (idx>-1) {
+    orders[idx].status = 'shipped';
+    localStorage.setItem('qow_orders', JSON.stringify(orders));
+    initDashboard();
+    renderAllOrders('all');
+    alert('✅ Order ' + ref + ' marked as shipped!');
+  }
+}
+
+function waContact(phone, ref) {
+  const msg = encodeURIComponent(`Hello! This is Queen of Wigs 👑. Your order *${ref}* has been shipped and is on its way. Thank you for shopping with us!`);
+  window.open('https://wa.me/' + phone + '?text=' + msg, '_blank');
+}
+
+/* ── PRODUCTS ── */
+const DEFAULT_PRODUCTS = [
+  { id:1, name:'Mila Bob Wig',         price:2000, image:'images/mila bob wig.jpeg' },
+  { id:2, name:'Zuri Curly Wig',       price:3000, image:'images/Zuri curly wig.jpeg' },
+  { id:3, name:'Braided Full Lace Wig',price:4000, image:'images/Braided full lace wig.jpeg' },
+  { id:4, name:'Carl Pixie Wig',       price:2000, image:'images/Carl pixie wig.jpeg' },
+  { id:5, name:'Havi Carl Wig',        price:3000, image:'images/Havi carl wig.jpeg' },
+  { id:6, name:'Maya Wig',             price:2500, image:'images/maya.jpeg' },
+];
+
+function renderProducts() {
+  const custom = JSON.parse(localStorage.getItem('admin_products') || '[]');
+  const all    = [...DEFAULT_PRODUCTS, ...custom];
+  document.getElementById('products-table').innerHTML = `<div style="overflow-x:auto;"><table>
+    <thead><tr><th>#</th><th>Product</th><th>Price</th><th>Type</th><th>Action</th></tr></thead>
+    <tbody>
+    ${all.map((p,i) => `<tr>
+      <td>${i+1}</td>
+      <td><strong>${p.name}</strong></td>
+      <td>KSh ${Number(p.price).toLocaleString()}</td>
+      <td><span class="status-badge ${p.id>10?'status-paid':'status-shipped'}">${p.id>10?'✨ Custom':'👑 Default'}</span></td>
+      <td>${p.id>10?`<button class="action-btn" onclick="deleteProduct(${p.id})">🗑 Remove</button>`:'<span style="color:#ccc;font-size:12px;">Built-in</span>'}</td>
+    </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function addProduct() {
+  const name  = document.getElementById('new-name').value.trim();
+  const price = document.getElementById('new-price').value.trim();
+  const image = document.getElementById('new-image').value.trim() || 'images/our wig.png';
+  if (!name || !price) { alert('Please enter product name and price.'); return; }
+  const custom = JSON.parse(localStorage.getItem('admin_products') || '[]');
+  custom.push({ id: Date.now(), name, price: Number(price), image });
+  localStorage.setItem('admin_products', JSON.stringify(custom));
+  document.getElementById('new-name').value = '';
+  document.getElementById('new-price').value = '';
+  document.getElementById('new-image').value = '';
+  renderProducts();
+  alert('✅ ' + name + ' added to your store!');
+}
+
+function deleteProduct(id) {
+  if (!confirm('Remove this product from your store?')) return;
+  const custom = JSON.parse(localStorage.getItem('admin_products') || '[]');
+  localStorage.setItem('admin_products', JSON.stringify(custom.filter(p=>p.id!==id)));
+  renderProducts();
+}
+
+/* ── EXPORT ── */
+function exportCSV() {
+  const orders = getOrders();
+  if (!orders.length) { alert('No orders to export yet.'); return; }
+  const rows = orders.map(o => [
+    o.ref, o.date?new Date(o.date).toLocaleDateString('en-KE'):'',
+    o.name, o.email, o.phone, o.address,
+    (o.items||[]).map(i=>i.name).join(' | '),
+    o.subtotal, 200, o.total, o.status||'paid'
+  ].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const csv = ['Ref,Date,Name,Email,Phone,Address,Items,Subtotal,Delivery,Total,Status', ...rows].join('\n');
+  const a   = document.createElement('a');
+  a.href    = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'queen_of_wigs_orders_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function exportJSON() {
+  const orders = getOrders();
+  navigator.clipboard.writeText(JSON.stringify(orders, null, 2))
+    .then(() => alert('✅ Order data copied to clipboard!'))
+    .catch(() => alert('Please copy from the browser console instead.'));
+}
+
+/* ── INIT ── */
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key==='Enter') checkLogin(); });
+</script>
+</body>
+</html>
