@@ -5,17 +5,17 @@
 
 const SOCIAL_LINKS = {
   whatsapp:  'https://wa.me/254713248937',
-  facebook:  'https://facebook.com/ezrakingofwigs',
-  tiktok:    'https://www.tiktok.com/@queen_of_wigs',
-  instagram: 'https://www.instagram.com/queen_ofwigs/',
-  youtube:   'https://www.youtube.com/@queen_of_wigs'
+  facebook:  'https://www.facebook.com/share/18W9DH3U6M/',
+  tiktok:    'https://tiktok.com/@queen_of_wigs',
+  instagram: 'https://www.instagram.com/queen_ofwigs?igsh=MTJwYWZzc2MzaWFseQ==',
+  youtube:   'https://youtube.com/@queenofwigs1813?si=TT6k-xYGytQa7qzr'
 };
 
 const CONTACT = {
   phone:    '+254 713 248 937',
   phoneRaw: '+254713248937',
   whatsapp: '254713248937',
-  email:    'karanjaezra140@gmail.com',
+  email:    'queenofwigs1@gmail.com',
   location: 'Naivasha, Kenya'
 };
 
@@ -383,10 +383,24 @@ function initContactForm() {
     const email   = document.getElementById('email').value.trim();
     const message = document.getElementById('message').value.trim();
     if (!name || !email || !message) { showToast('⚠️ Please fill in all fields'); return; }
-    const msg = document.getElementById('successMsg');
-    if (msg) { msg.textContent = '✅ Message sent! We\'ll be in touch soon.'; msg.style.color = '#2e7d32'; }
-    form.reset();
-    setTimeout(() => { if(msg) msg.textContent = ''; }, 5000);
+
+    fetch('https://queen-of-wigs-production.up.railway.app/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message })
+    })
+    .then(r => r.json())
+    .then(data => {
+      const msg = document.getElementById('successMsg');
+      if (data.success) {
+        if (msg) { msg.textContent = '✅ Message sent! We\'ll be in touch soon.'; msg.style.color = '#2e7d32'; }
+        form.reset();
+        setTimeout(() => { if(msg) msg.textContent = ''; }, 5000);
+      } else {
+        showToast('❌ Failed to send. Please try again.');
+      }
+    })
+    .catch(() => showToast('❌ Could not connect. Please try again.'));
   });
 }
 
