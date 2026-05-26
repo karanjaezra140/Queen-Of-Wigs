@@ -1,6 +1,16 @@
- const express = require('express');
+const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+
+const nodemailer = require('nodemailer');
+
+const EMAIL_USER = 'karanjaezra140@gmail.com';
+const EMAIL_PASS = 'ooak eoof qnqm kvzk';
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: { user: EMAIL_USER, pass: EMAIL_PASS }
+});
 
 const app = express();
 app.use(cors());
@@ -72,6 +82,28 @@ app.post('/api/mpesa/callback', (req, res) => {
   }
 
   res.json({ ResultCode: 0, ResultDesc: 'Success' });
+});
+
+// Contact form route
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+    await transporter.sendMail({
+      from: EMAIL_USER,
+      to: EMAIL_USER,
+      subject: `New message from ${name} — Queen of Wigs`,
+      html: `
+        <h3>New Contact Form Message</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong> ${message}</p>
+      `
+    });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Email error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 // Start server
