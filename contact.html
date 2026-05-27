@@ -4,8 +4,99 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact — Queen of Wigs</title>
-  <meta name="description" content="Get in touch with Queen of Wigs. Order, consult, or ask us anything via phone, WhatsApp, or email.">
+  <meta name="description" content="Get in touch with Queen of Wigs. Order, consult, or ask us anything via WhatsApp, phone, or email.">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .contact-section { padding: 64px 0 100px; }
+    .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    @media(max-width:768px){ .contact-layout { grid-template-columns: 1fr; } }
+
+    .contact-info-panel {
+      background: var(--grad-dark);
+      border-radius: var(--radius);
+      padding: 44px 36px;
+      color: white;
+    }
+    .contact-info-panel h3 {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      margin-bottom: 32px;
+      color: white;
+    }
+    .contact-info-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .contact-info-item:last-of-type { border-bottom: none; }
+    .contact-icon-box {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(196,153,74,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .contact-info-item h4 { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .contact-info-item p, .contact-info-item a { font-size: 14px; color: rgba(255,255,255,.75); line-height: 1.6; }
+    .contact-info-item a:hover { color: white; }
+
+    /* WhatsApp CTA card */
+    .wa-cta-card {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      border-radius: var(--radius);
+      padding: 44px 36px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .wa-cta-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      color: white;
+    }
+    .wa-cta-card p { font-size: 14px; opacity: .9; line-height: 1.7; }
+
+    .wa-option-btn {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,.15);
+      border: 1.5px solid rgba(255,255,255,.3);
+      border-radius: 14px;
+      padding: 16px 20px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+      text-decoration: none;
+    }
+    .wa-option-btn:hover { background: rgba(255,255,255,.25); transform: translateY(-2px); color: white; }
+    .wa-option-btn svg { flex-shrink: 0; }
+    .wa-option-btn span { line-height: 1.3; }
+    .wa-option-btn small { display: block; font-size: 11px; font-weight: 400; opacity: .8; margin-top: 2px; }
+
+    .wa-form-section { margin-top: 8px; }
+    .wa-form-section label { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.7); display: block; margin-bottom: 8px; }
+    .wa-form-section input, .wa-form-section textarea {
+      width: 100%; background: rgba(255,255,255,.15);
+      border: 1.5px solid rgba(255,255,255,.25);
+      border-radius: 10px; padding: 13px 16px;
+      color: white; font-size: 14px; font-family: var(--font-body);
+      outline: none; transition: border-color .2s;
+      margin-bottom: 14px;
+    }
+    .wa-form-section input::placeholder, .wa-form-section textarea::placeholder { color: rgba(255,255,255,.45); }
+    .wa-form-section input:focus, .wa-form-section textarea:focus { border-color: rgba(255,255,255,.6); }
+    .wa-form-section textarea { resize: vertical; min-height: 100px; }
+    .wa-send-btn {
+      width: 100%; background: white; color: #128C7E;
+      border: none; border-radius: 50px; padding: 16px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .wa-send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+  </style>
 </head>
 <body>
 
@@ -16,7 +107,7 @@
     <div class="container">
       <div class="eyebrow">Get in Touch</div>
       <h1 class="section-title">Contact <em>Us</em></h1>
-      <p>We'd love to hear from you. Reach out for orders, consultations, or any questions — we respond fast!</p>
+      <p>We'd love to hear from you. Chat with us on WhatsApp for fast replies — we respond within minutes!</p>
     </div>
   </div>
 
@@ -65,58 +156,69 @@
             <div class="contact-icon-box">▶️</div>
             <div>
               <h4>YouTube</h4>
-              <a href="https://youtube.com/@queenofwigs1813?si=TT6k-xYGytQa7qzr" target="_blank">@queen_of_wigs</a>
+              <a href="https://youtube.com/@queenofwigs1813?si=TT6k-xYGytQa7qzr" target="_blank">@queenofwigs1813</a>
             </div>
           </div>
 
-          <div style="margin-top:36px;">
+          <div style="margin-top:28px;">
             <h4 style="font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">Follow Us</h4>
             <div class="social-icons" style="justify-content:flex-start;">
-              <a href="https://wa.me/254713248937" target="_blank" aria-label="WhatsApp"><img src="images/whatsapp.png" alt="WhatsApp"></a>
-              <a href="https://www.facebook.com/share/18W9DH3U6M/" target="_blank" aria-label="Facebook"><img src="images/facebook.png" alt="Facebook"></a>
-              <a href="https://tiktok.com/@queen_of_wigs" target="_blank" aria-label="TikTok"><img src="images/tiktok.png" alt="TikTok"></a>
-              <a href="https://www.instagram.com/queen_ofwigs?igsh=MTJwYWZzc2MzaWFseQ==" target="_blank" aria-label="Instagram"><img src="images/instagram.png" alt="Instagram"></a>
-              <a href="https://youtube.com/@queenofwigs1813?si=TT6k-xYGytQa7qzr" target="_blank" aria-label="YouTube" class="yt-icon">
+              <a href="https://wa.me/254713248937" target="_blank" aria-label="WhatsApp" class="social-icon-link wa">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </a>
+              <a href="https://www.facebook.com/share/18W9DH3U6M/" target="_blank" aria-label="Facebook" class="social-icon-link fb">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </a>
+              <a href="https://tiktok.com/@queen_of_wigs" target="_blank" aria-label="TikTok" class="social-icon-link tt">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.2 8.2 0 004.79 1.53V6.78a4.85 4.85 0 01-1.02-.09z"/></svg>
+              </a>
+              <a href="https://www.instagram.com/queen_ofwigs?igsh=MTJwYWZzc2MzaWFseQ==" target="_blank" aria-label="Instagram" class="social-icon-link ig">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="https://youtube.com/@queenofwigs1813?si=TT6k-xYGytQa7qzr" target="_blank" aria-label="YouTube" class="social-icon-link yt">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
               </a>
             </div>
           </div>
-
-          <!-- Quick WhatsApp CTA -->
-          <div style="margin-top:36px;padding-top:28px;border-top:1px solid rgba(255,255,255,.1);">
-            <a href="https://wa.me/254713248937?text=Hello%20Queen%20of%20Wigs!%20I%20would%20like%20to%20enquire%20about%20your%20wigs." target="_blank"
-              style="display:flex;align-items:center;gap:10px;background:#25D366;color:white;padding:14px 22px;border-radius:12px;font-weight:700;font-size:14px;transition:opacity .2s;">
-              <img src="images/whatsapp.png" alt="" style="width:22px;filter:brightness(0) invert(1);">
-              Chat with us on WhatsApp
-            </a>
-          </div>
         </div>
 
-        <!-- Contact Form -->
-        <div class="contact-form-card fade-up" style="transition-delay:.15s">
-          <h3>Send a Message ✉️</h3>
-          <form id="contactForm">
-            <div class="field-group">
+        <!-- WhatsApp Contact Card -->
+        <div class="wa-cta-card fade-up" style="transition-delay:.15s">
+          <h3>Chat With Us 💬</h3>
+          <p>The fastest way to reach us! Send us a message on WhatsApp — we reply within minutes during business hours.</p>
+
+          <!-- Quick action buttons -->
+          <a href="https://wa.me/254713248937?text=Hello%20Queen%20of%20Wigs!%20I%20would%20like%20to%20enquire%20about%20your%20wigs." target="_blank" class="wa-option-btn">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <span>General Enquiry<small>Ask about wigs, pricing, delivery</small></span>
+          </a>
+
+          <a href="https://wa.me/254713248937?text=Hello%20Queen%20of%20Wigs!%20I%20would%20like%20to%20place%20an%20order." target="_blank" class="wa-option-btn">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M6 2l1.5 9h9L18 2M6 2H4M6 2l-1 6m13-6h2m-2 0l1 6M5 8H3m16 0h2M5 8l-1 7h16l-1-7M5 8h14M9 21a1 1 0 100-2 1 1 0 000 2m6 0a1 1 0 100-2 1 1 0 000 2"/></svg>
+            <span>Place an Order<small>Ready to buy? Let's get started!</small></span>
+          </a>
+
+          <a href="https://wa.me/254713248937?text=Hello%20Queen%20of%20Wigs!%20I%20need%20help%20with%20my%20order." target="_blank" class="wa-option-btn">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+            <span>Order Support<small>Track or get help with an order</small></span>
+          </a>
+
+          <!-- Custom message form -->
+          <div class="wa-form-section">
+            <p style="font-size:13px;opacity:.8;margin-bottom:16px;">Or type a custom message below:</p>
+            <form id="contactForm">
               <label for="name">Your Name</label>
               <input type="text" id="name" placeholder="e.g. Amina Wanjiru" required autocomplete="name">
-            </div>
-            <div class="field-group">
-              <label for="email">Email Address</label>
-              <input type="email" id="email" placeholder="your@email.com" required autocomplete="email">
-            </div>
-            <div class="field-group">
-              <label for="phone">Phone / WhatsApp (optional)</label>
+              <label for="phone">Phone (optional)</label>
               <input type="tel" id="phone" placeholder="+254 7XX XXX XXX" autocomplete="tel">
-            </div>
-            <div class="field-group">
               <label for="message">Your Message</label>
-              <textarea id="message" placeholder="How can we help you? Ask about wigs, pricing, delivery, or anything!" required></textarea>
-            </div>
-            <button type="submit" class="btn-primary" style="width:100%;justify-content:center;border:none;font-size:15px;padding:16px;">
-              Send Message →
-            </button>
-          </form>
-          <p id="successMsg"></p>
+              <textarea id="message" placeholder="How can we help you?" required></textarea>
+              <button type="submit" class="wa-send-btn">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#128C7E"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Send via WhatsApp
+              </button>
+            </form>
+          </div>
         </div>
 
       </div>

@@ -1086,17 +1086,23 @@ nav a:hover, nav a.active {
 /* ═══════════════════════════════════════
    SOCIAL ICONS
 ═══════════════════════════════════════ */
-.social-icons { display: flex; align-items: center; gap: 10px; }
-.social-icons a {
-  width: 40px; height: 40px;
-  background: rgba(255,255,255,.07);
-  border-radius: 11px; border: 1px solid rgba(255,255,255,.12);
+.social-icons { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.social-icon-link {
+  width: 42px; height: 42px;
+  border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  transition: background var(--transition), transform var(--transition), border-color var(--transition);
+  transition: transform .2s, box-shadow .2s;
+  color: white;
+  flex-shrink: 0;
 }
-.social-icons a:hover { background: var(--rose); transform: translateY(-3px); border-color: var(--rose); }
+.social-icon-link:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.3); color: white; }
+.social-icon-link.wa  { background: #25D366; }
+.social-icon-link.fb  { background: #1877F2; }
+.social-icon-link.tt  { background: #000000; }
+.social-icon-link.ig  { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+.social-icon-link.yt  { background: #FF0000; }
+/* Legacy img-based icons fallback */
 .social-icons img { width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1); }
-.social-icons .yt-icon svg { width: 18px; height: 18px; fill: white; }
 
 /* ═══════════════════════════════════════
    FOOTER
@@ -1109,11 +1115,12 @@ footer {
   display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 52px; margin-bottom: 52px;
 }
-.footer-brand img {
-  width: 60px; height: 60px; border-radius: 50%;
+.footer-brand img, .footer-logo {
+  width: 70px; height: 70px; border-radius: 50%;
   object-fit: cover; border: 2px solid var(--gold);
   margin-bottom: 16px;
-  box-shadow: 0 0 0 6px rgba(196,153,74,.1);
+  box-shadow: 0 0 0 6px rgba(196,153,74,.15);
+  display: block;
 }
 .footer-brand-name {
   font-family: var(--font-head); font-size: 1.35rem;
